@@ -24,14 +24,15 @@ targetUserScene.on('text', async (ctx) => {
     const input = ctx.message.text;
     const targetUsername = extractUsernameFromLink(input);
 
-    await ctx.reply('🏃 Olib kelinmoqda...');
+    await ctx.reply('🏃 Followerlar olib kelinmoqda...');
 
     const followers = await getInstagramFollowers(ctx.session.username, ctx.session.password, targetUsername);
 
     if (!followers) {
         await ctx.reply("Instagramdan followerlarni olishda muammo yuzaga keldi.");
     } else {
-        const messages = followers.map(async (follower) => {
+        // Xabarlarni paralel ravishda yuborish
+        const sendMessages = followers.map(async (follower) => {
             const message = `Username: ${follower.username}`;
             try {
                 await ctx.replyWithPhoto(follower.profilePhoto, {
@@ -55,8 +56,8 @@ targetUserScene.on('text', async (ctx) => {
             }
         });
 
-        // All messages are sent in parallel
-        await Promise.all(messages);
+        // Paralel ravishda barcha xabarlarni yuborish
+        await Promise.all(sendMessages);
         await ctx.reply('Barcha followerslar yuborildi.');
     }
 
