@@ -31,7 +31,7 @@ targetUserScene.on('text', async (ctx) => {
     if (!followers) {
         await ctx.reply("Instagramdan followerlarni olishda muammo yuzaga keldi.");
     } else {
-        for (let follower of followers) {
+        const messages = followers.map(async (follower) => {
             const message = `Username: ${follower.username}`;
             try {
                 await ctx.replyWithPhoto(follower.profilePhoto, {
@@ -53,11 +53,15 @@ targetUserScene.on('text', async (ctx) => {
                     Markup.button.url("Instagramga o'tish", `https://instagram.com/${follower.username}`)
                 ]));
             }
-        }
+        });
+
+        // All messages are sent in parallel
+        await Promise.all(messages);
         await ctx.reply('Barcha followerslar yuborildi.');
     }
 
     await ctx.scene.leave();
 });
+
 
 module.exports = { loginScene, targetUserScene };
