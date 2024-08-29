@@ -2,8 +2,9 @@ const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
 
-import {Scenes, Telegraf, session, Markup} from "telegraf";
-import {downloadInstagramVideo} from "./utils/functions";
+const {Scenes, Telegraf, session, Markup} =require("telegraf");
+const {downloadInstagramVideo} = require("./utils/functions");
+const {loginScene, targetUserScene} = require("./scene/login");
 
 const bot = new Telegraf(process.env.BOT_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN');
 
