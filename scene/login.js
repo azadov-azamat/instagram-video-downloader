@@ -36,14 +36,21 @@ targetUserScene.on('text', async (ctx) => {
             try {
                 await ctx.replyWithPhoto(follower.profilePhoto, {
                     caption: message,
-                    reply_markup: Markup.inlineKeyboard([
-                        Markup.button.url("Instagramga o'tish", 'https://instagram.com/' + follower.username)
-                    ])
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                {
+                                    text: "Instagramga o'tish",
+                                    url: `https://instagram.com/${follower.username}`
+                                }
+                            ]
+                        ]
+                    }
                 });
             } catch (e) {
                 console.log(e);
                 await ctx.reply(message, Markup.inlineKeyboard([
-                    Markup.button.url("Instagramga o'tish", 'https://instagram.com/' + follower.username)
+                    Markup.button.url("Instagramga o'tish", `https://instagram.com/${follower.username}`)
                 ]));
             }
         }

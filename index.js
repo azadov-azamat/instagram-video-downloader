@@ -6,7 +6,7 @@ const {Scenes, Telegraf, session, Markup} =require("telegraf");
 const {downloadInstagramVideo} = require("./utils/functions");
 const {loginScene, targetUserScene} = require("./scene/login");
 
-const bot = new Telegraf(process.env.BOT_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN');
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const stage = new Scenes.Stage([loginScene, targetUserScene]);
 bot.use(session());
