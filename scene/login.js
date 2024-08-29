@@ -1,5 +1,6 @@
 const {Markup, Scenes} = require("telegraf");
 const {getInstagramFollowers, extractUsernameFromLink} = require("../utils/functions");
+
 const loginScene = new Scenes.BaseScene('loginScene');
 
 loginScene.enter((ctx) => ctx.reply('Iltimos, Instagram username va parolni kiriting (format: username:password).'));

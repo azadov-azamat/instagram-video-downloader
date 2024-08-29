@@ -1,11 +1,13 @@
+const {loginScene, targetUserScene} = require("./scene/login");
+
 const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
 
-import {Scenes, Telegraf, session, Markup} from "telegraf";
-import {downloadInstagramVideo} from "./utils/functions";
+const {Scenes, Telegraf, session, Markup} = require("telegraf");
+const {downloadInstagramVideo} = require("./utils/functions");
 
-const bot = new Telegraf(process.env.BOT_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN');
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const stage = new Scenes.Stage([loginScene, targetUserScene]);
 bot.use(session());
