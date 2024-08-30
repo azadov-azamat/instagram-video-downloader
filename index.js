@@ -1,11 +1,10 @@
-const {loginScene, targetUserScene} = require("./scene/login");
-
 const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const {Scenes, Telegraf, session, Markup} = require("telegraf");
+const {Scenes, Telegraf, session, Markup} =require("telegraf");
 const {downloadInstagramVideo} = require("./utils/functions");
+const {loginScene, targetUserScene} = require("./scene/login");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 

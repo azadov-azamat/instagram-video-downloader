@@ -25,33 +25,45 @@ targetUserScene.on('text', async (ctx) => {
     const input = ctx.message.text;
     const targetUsername = extractUsernameFromLink(input);
 
-    await ctx.reply('🏃 Olib kelinmoqda...');
+    await ctx.reply('🏃 Followerlar olib kelinmoqda...');
 
     const followers = await getInstagramFollowers(ctx.session.username, ctx.session.password, targetUsername);
 
     if (!followers) {
         await ctx.reply("Instagramdan followerlarni olishda muammo yuzaga keldi.");
     } else {
-        for (let follower of followers) {
+        // Xabarlarni paralel ravishda yuborish
+        const sendMessages = followers.map(async (follower) => {
             const message = `Username: ${follower.username}`;
             try {
                 await ctx.replyWithPhoto(follower.profilePhoto, {
                     caption: message,
-                    reply_markup: Markup.inlineKeyboard([
-                        Markup.button.url("Instagramga o'tish", 'https://instagram.com/' + follower.username)
-                    ])
+                    reply_markup: {
+                        inline_keyboard: [
+                            [
+                                {
+                                    text: "Instagramga o'tish",
+                                    url: `https://instagram.com/${follower.username}`
+                                }
+                            ]
+                        ]
+                    }
                 });
             } catch (e) {
                 console.log(e);
                 await ctx.reply(message, Markup.inlineKeyboard([
-                    Markup.button.url("Instagramga o'tish", 'https://instagram.com/' + follower.username)
+                    Markup.button.url("Instagramga o'tish", `https://instagram.com/${follower.username}`)
                 ]));
             }
-        }
+        });
+
+        // Paralel ravishda barcha xabarlarni yuborish
+        await Promise.all(sendMessages);
         await ctx.reply('Barcha followerslar yuborildi.');
     }
 
     await ctx.scene.leave();
 });
+
 
 module.exports = { loginScene, targetUserScene };
