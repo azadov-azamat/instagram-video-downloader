@@ -1,4 +1,4 @@
-FROM node:18-slim
+FROM node:20-slim
 
 # Brauzerlar uchun kerakli kutubxonalarni o‘rnatish
 RUN apt-get update && apt-get install -y chromium \
