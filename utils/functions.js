@@ -1,5 +1,9 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 const puppeteer = require('puppeteer');
 const instagramGetUrl = require('instagram-url-direct');
+const {User, Follower} = require("../db/models");
 
 async function downloadInstagramVideo(url) {
     try {
@@ -18,9 +22,10 @@ function extractUsernameFromLink(link) {
     return match ? match[1] : link; // Agar link bo'lsa, username ni ajratib oladi, aks holda kiritilgan matnni qaytaradi
 }
 
-async function getInstagramFollowers(username, password, targetUsername) {
+async function getInstagramFollowers(username, password, targetUsername, userId) {
+    console.log("userId", userId)
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: true, // false bo'lsa browser ochiladi, true bo'lsa ochilmaydi
         timeout: 300000,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
@@ -34,16 +39,15 @@ async function getInstagramFollowers(username, password, targetUsername) {
         await page.waitForSelector('input[name="password"]');
         await page.type('input[name="password"]', password);
         await page.click('button[type="submit"]');
-        await page.waitForNavigation({ waitUntil: 'networkidle2' });
+        await page.waitForNavigation({waitUntil: 'networkidle2'});
 
-        await page.goto(`https://www.instagram.com/${targetUsername}/`, { waitUntil: 'networkidle2' });
+        await page.goto(`https://www.instagram.com/${targetUsername}/`, {waitUntil: 'networkidle2'});
 
-        await page.waitForSelector('a[href*="/followers/"]', { visible: true });
+        await page.waitForSelector('a[href*="/followers/"]', {visible: true});
         await page.click('a[href*="/followers/"]');
 
-        await page.waitForSelector('div[role="dialog"] div[style*="flex-direction: column;"]', { visible: true });
+        await page.waitForSelector('div[role="dialog"] div[style*="flex-direction: column;"]', {visible: true});
 
-        // Followerlarni olish va scroll qilish
         const followersList = await page.evaluate(async () => {
             const scrollableElement = document.querySelector('div[role="dialog"] div[style*="flex-direction: column;"]');
             let lastHeight = 0;
@@ -85,7 +89,17 @@ async function getInstagramFollowers(username, password, targetUsername) {
         });
 
         await browser.close();
-        return followersList;
+
+        const savedFollowers = []
+        for (const follower of followersList) {
+            let currentFollower = await Follower.findOne({ where: { username: follower.username, user_id: userId } });
+            if (!currentFollower) {
+                await Follower.create({ username: follower.username, profilePicture: follower.profilePhoto, user_id: userId });
+                savedFollowers.push(follower);
+            }
+        }
+
+        return savedFollowers;
     } catch (e) {
         console.log(e);
         await browser.close();

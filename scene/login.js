@@ -1,5 +1,6 @@
 const {Markup, Scenes} = require("telegraf");
 const {getInstagramFollowers, extractUsernameFromLink} = require("../utils/functions");
+const {User} = require("../db/models");
 
 const loginScene = new Scenes.BaseScene('loginScene');
 
@@ -26,8 +27,14 @@ targetUserScene.on('text', async (ctx) => {
     const targetUsername = extractUsernameFromLink(input);
 
     await ctx.reply('🏃 Followerlar olib kelinmoqda...');
-
-    const followers = await getInstagramFollowers(ctx.session.username, ctx.session.password, targetUsername);
+    let {userId} = ctx.session
+    const followers = await getInstagramFollowers(ctx.session.username, ctx.session.password, targetUsername, userId);
+    let user = await User.findOne({where: {id: userId}});
+    await user.update( {
+        instagramUsername: ctx.session.username,
+        instagramPassword: ctx.session.password,
+    })
+    await user.save();
 
     if (!followers) {
         await ctx.reply("Instagramdan followerlarni olishda muammo yuzaga keldi.");
