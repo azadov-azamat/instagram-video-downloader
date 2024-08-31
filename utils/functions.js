@@ -19,7 +19,12 @@ function extractUsernameFromLink(link) {
 }
 
 async function getInstagramFollowers(username, password, targetUsername) {
-    const browser = await puppeteer.launch({ headless: true, timeout: 300000,  args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    const browser = await puppeteer.launch({
+        headless: true,
+        timeout: 300000,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        executablePath: '/usr/bin/chromium-browser',
+    });
     const page = await browser.newPage();
 
     try {
