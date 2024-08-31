@@ -23,6 +23,7 @@ async function getInstagramFollowers(username, password, targetUsername) {
         headless: true,
         timeout: 300000,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        executablePath: '/usr/bin/chromium-browser',
     });
     const page = await browser.newPage();
 
