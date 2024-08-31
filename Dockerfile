@@ -16,4 +16,4 @@ COPY . /app
 RUN npm install
 
 # Asosiy Node.js skriptni ishga tushirish
-CMD ["node", "index.js"]
+CMD ["node", "bin/www"]
