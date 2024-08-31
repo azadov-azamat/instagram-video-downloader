@@ -12,3 +12,5 @@ RUN npm install
 
 # Asosiy Node.js skriptni ishga tushirish
 CMD ["node", "index.js"]
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
