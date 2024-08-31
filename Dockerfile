@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . /app
 
 # NPM paketlarini o‘rnatish
-RUN yarn install
+RUN npm install
 
 # Asosiy Node.js skriptni ishga tushirish
 CMD ["node", "index.js"]
